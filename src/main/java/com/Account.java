@@ -1,5 +1,7 @@
 package com;
 
+import io.qameta.allure.Step;
+
 public class Account {
 
     private final String name;
@@ -10,27 +12,29 @@ public class Account {
         this.name = name;
     }
 
-    public boolean checkNameToEmboss() throws NullPointerException {
-
-        String trimmedName = name.trim();
-        boolean isNumeric = trimmedName.matches(".*\\d.*");
-
-        if (trimmedName.length() >= 3 && trimmedName.length() <= 19) {
-            if (!isNumeric) {
-                if (!trimmedName.isBlank()) {
-                    for (char tName : trimmedName.toCharArray()) {
-                        if (Character.isWhitespace(tName)) {
-                            WhiteSpace += 1;
-                        }
-                    }
-                    if (WhiteSpace != 1) {
-                        return false;
-                    }
-                    return true;
-                }
-            }
+    @Step("Проверка текста для эмбоссирования")
+    public boolean checkNameToEmboss() {
+        if (name == null) {
             return false;
         }
-        return false;
+        String trimmedName = name.trim();
+        boolean isNumeric = trimmedName.matches(".*\\d.*");
+        return isValidLength(trimmedName) && !isNumeric && !trimmedName.isBlank() && isSpaceOne(trimmedName);
+    }
+
+    public boolean isSpaceOne(String trimmedName) {
+        for (char tName : trimmedName.toCharArray()) {
+            if (Character.isWhitespace(tName)) {
+                WhiteSpace += 1;
+            }
+        }
+        if (WhiteSpace != 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidLength(String trimmedName) {
+        return trimmedName.length() >= 3 && trimmedName.length() <= 19;
     }
 }
